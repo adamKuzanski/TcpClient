@@ -10,53 +10,35 @@ namespace TCP_Client
         private static bool switchOff = true;
         static void Main(string[] args)
         {
+            const int port = 8080;
+            var client = new TcpClient("127.0.0.1", port);
+            var stream = client.GetStream();
             do
             {
-                Console.Clear();
                 Console.WriteLine("Give the text ");
                 string tekst = "";
-                tekst = Console.ReadLine();
-                Connect("127.0.0.1", tekst);
+                tekst = "1st client";
+                var data = Encoding.ASCII.GetBytes(tekst);
+                stream.Write(data, 0, data.Length);
+                Console.WriteLine("Sent: {0}", tekst);
                 Console.WriteLine("\nDONE\n");
-            } while (switchOff);
+                System.Threading.Thread.Sleep(500);
+            } while (true);
+            stream.Close();
+            client.Close();
         }
 
-        private static void Connect(string server, string message)
+        private static void Connect(string server, string message, TcpClient client)
         {         
             try
-            {
-                //----------------------------------Create a TcpClient----------------------------------
-                // Port and server must be the same in Client and Server
-                const int port = 13000;
-                var client = new TcpClient(server, port);
+            {      
+                 
+                
+               
+                
+                
+                //client.Close();
 
-                //----------------------------------Send a message to TCP Server----------------------------------
-                var data = Encoding.ASCII.GetBytes(message);  
-
-                // Get a client stream for reading and writing
-                var stream = client.GetStream();
-
-                // Send the message to the connected TcpServer. 
-
-                stream.Write(data, 0, data.Length);
-                Console.WriteLine("Sent: {0}", message);
-
-
-                ////----------------------------------Receive the TcpServer.response.----------------------------------
-                //// Buffer to store the response bytes.
-                //data = new byte[256];
-
-                //// String to store the response ASCII representation.
-                //var responseData = "";
-
-                //// Read the first batch of the TcpServer response bytes.
-                //var bytes = stream.Read(data, 0, data.Length);
-                //responseData = Encoding.ASCII.GetString(data, 0, bytes);
-                //Console.WriteLine("Received: {0}", responseData);
-
-                // Close everything.
-                stream.Close();
-                client.Close();
             }
             catch (ArgumentNullException e)
             {
@@ -88,6 +70,7 @@ namespace TCP_Client
                 {
                     switchOff = false;
                 }
+                
             }
         }
     }
